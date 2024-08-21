@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
+
+use App\Http\Requests\StoreShoeStockRequest;
+use App\Http\Requests\UpdateShoeStockRequest;
 use App\Models\ShoeStock;
-use Faker\Factory as Faker;
+use Illuminate\Http\Request;
 
 class ShoeStockController extends Controller
 {
@@ -12,14 +14,9 @@ class ShoeStockController extends Controller
         return ShoeStock::all();
     }
 
-    public function store(Request $request)
+    public function store(StoreShoeStockRequest $request)
     {
-        $validated = $request->validate([
-            'shoe_name' => 'required|string|max:255',
-            'size' => 'required|integer',
-            'quantity' => 'required|integer',
-        ]);
-        ShoeStock::create($validated);
+        ShoeStock::create($request->validated());
         return response()->json('Chaussure ajoutée avec succès', 200);
     }
 
@@ -28,10 +25,10 @@ class ShoeStockController extends Controller
         return ShoeStock::find($id);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateShoeStockRequest $request, $id)
     {
         $shoeStock = ShoeStock::findOrFail($id);
-        $shoeStock->update($request->all());
+        $shoeStock->update($request->validated());
         return response()->json($shoeStock, 200);
     }
 
